@@ -73,13 +73,17 @@ define php::extension::install (
     }
   }
 
-  unless $provider == 'none' {
-    package { $real_package:
-      ensure       => $ensure,
-      provider     => $provider,
-      source       => $source,
-      responsefile => $responsefile,
-      require      => $package_require,
+  if versioncmp($php::globals::php_version, '7.2') >= 0 and $title == 'mcrypt' {
+    debug('Not installing mcrypt as PHP is 7.2 or higher')
+  } else {
+    unless $provider == 'none' {
+      package { $real_package:
+        ensure       => $ensure,
+        provider     => $provider,
+        source       => $source,
+        responsefile => $responsefile,
+        require      => $package_require,
+      }
     }
   }
 }
